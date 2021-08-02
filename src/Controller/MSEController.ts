@@ -63,7 +63,7 @@ class MSEController {
         onSourceOpen: this._onSourceOpen.bind(this),
         onSourceEnded: this._onSourceEnded.bind(this),
         onSourceClose: this._onSourceClose.bind(this),
-        onSourceBufferError: () => {},
+        onSourceBufferError: () => { },
         onSourceBufferUpdateEnd: this._onSourceBufferUpdateEnd.bind(this)
     }
 
@@ -101,55 +101,61 @@ class MSEController {
     private _pendingSegments: {
         [P in keyof SourceBufferObj]: Array<InitSegment | MediaSegment> | null
     } = {
-        video: [],
-        audio: []
-    }
+            video: [],
+            audio: []
+        }
 
     private _pendingRemoveRanges: {
         [P in keyof SourceBufferObj]: Array<{ start: number; end: number }> | null
     } = {
-        video: [],
-        audio: []
-    }
+            video: [],
+            audio: []
+        }
 
     private _idrList: IDRSampleList = new IDRSampleList()
 
     constructor(config: MSEControllerConfig) {
         this._config = config;
-        if(this._config.isLive && this._config.autoCleanupSourceBuffer === undefined) {
+        if (this._config.isLive && this._config.autoCleanupSourceBuffer === undefined) {
             // For live stream, do auto cleanup by default
             this._config.autoCleanupSourceBuffer = true;
         }
     }
 
     destroy() {
-        if(this._mediaElement || this._mediaSource) {
+        if (this._mediaElement || this._mediaSource) {
             this.detachMediaElement();
         }
         this._emitter.removeAllListeners();
-        delete this._emitter;
-        delete this.e;
+        delete (this as any)._emitter;
+        delete (this as any).e;
     }
 
     attachMediaElement(mediaElement: HTMLMediaElement) {
-        if(this._mediaSource) {
+        if (this._mediaSource) {
             throw new IllegalStateException('MediaSource has been attached to an HTMLMediaElement!');
         }
+        if (window.MediaSource) {
+            const ms = new window.MediaSource();
 
-        const ms = new window.MediaSource();
+            ms.addEventListener('sourceopen', this.e.onSourceOpen);
+            ms.addEventListener('sourceended', this.e.onSourceEnded);
+            ms.addEventListener('sourceclose', this.e.onSourceClose);
 
-        ms.addEventListener('sourceopen', this.e.onSourceOpen);
-        ms.addEventListener('sourceended', this.e.onSourceEnded);
-        ms.addEventListener('sourceclose', this.e.onSourceClose);
-
-        this._mediaSource = ms;
-        this._mediaElement = mediaElement;
-        this._mediaSourceObjectURL = window.URL.createObjectURL(this._mediaSource);
-        mediaElement.src = this._mediaSourceObjectURL;
+            this._mediaSource = ms;
+            this._mediaElement = mediaElement;
+            this._mediaSourceObjectURL = window.URL.createObjectURL(this._mediaSource);
+            mediaElement.src = this._mediaSourceObjectURL;
+        } else {
+            mediaElement.addEventListener('play', this.e.onSourceOpen);
+            mediaElement.addEventListener('ended', this.e.onSourceEnded);
+            mediaElement.addEventListener('emptied', this.e.onSourceClose);
+            this._mediaElement = mediaElement;
+        }
     }
 
     detachMediaElement() {
-        if(this._mediaSource) {
+        if (this._mediaSource) {
             const ms = this._mediaSource;
             Object.keys(this._sourceBuffers).forEach((type: string) => {
                 // pending segments should be discard
@@ -161,15 +167,15 @@ class MSEController {
 
                 // remove all sourcebuffers
                 const sb = this._sourceBuffers[type];
-                if(sb) {
-                    if(ms.readyState !== 'closed') {
+                if (sb) {
+                    if (ms.readyState !== 'closed') {
                         // ms edge can throw an error: Unexpected call to method or property access
                         try {
                             ms.removeSourceBuffer(sb);
                         } catch (error) {
                             Log.error(this.TAG, error.message);
                         }
-                        if(this.e) {
+                        if (this.e) {
                             sb.removeEventListener('error', this.e.onSourceBufferError);
                             sb.removeEventListener('updateend', this.e.onSourceBufferUpdateEnd);
                         }
@@ -179,14 +185,14 @@ class MSEController {
                 }
             });
 
-            if(ms.readyState === 'open') {
+            if (ms.readyState === 'open') {
                 try {
                     ms.endOfStream();
                 } catch (error) {
                     Log.error(this.TAG, error.message);
                 }
             }
-            if(this.e) {
+            if (this.e) {
                 ms.removeEventListener('sourceopen', this.e.onSourceOpen);
                 ms.removeEventListener('sourceended', this.e.onSourceEnded);
                 ms.removeEventListener('sourceclose', this.e.onSourceClose);
@@ -198,19 +204,19 @@ class MSEController {
             this._mediaSource = null;
         }
 
-        if(this._mediaElement) {
+        if (this._mediaElement) {
             this._mediaElement.src = '';
             this._mediaElement.removeAttribute('src');
             this._mediaElement = null;
         }
-        if(this._mediaSourceObjectURL) {
+        if (this._mediaSourceObjectURL) {
             window.URL.revokeObjectURL(this._mediaSourceObjectURL);
             this._mediaSourceObjectURL = null;
         }
     }
 
     appendInitSegment(initSegment: InitSegment, deferred?: boolean) {
-        if(!this._mediaSource || this._mediaSource.readyState !== 'open') {
+        if (!this._mediaSource || this._mediaSource.readyState !== 'open') {
             // sourcebuffer creation requires mediaSource.readyState === 'open'
             // so we defer the sourcebuffer creation, until sourceopen event triggered
             this._pendingSourceBufferInit.push(initSegment);
@@ -221,7 +227,7 @@ class MSEController {
 
         const is = initSegment;
         let mimeType = `${is.container}`;
-        if(is.codec && is.codec.length > 0) {
+        if (is.codec && is.codec.length > 0) {
             mimeType += `;codecs=${is.codec}`;
         }
 
@@ -230,13 +236,13 @@ class MSEController {
         // Log.info(this.TAG, `Received Initialization Segment, mimeType: ${mimeType}`);
         this._lastInitSegments[is.type] = is;
 
-        if(mimeType !== this._mimeTypes[is.type]) {
-            if(!this._mimeTypes[is.type]) {
+        if (mimeType !== this._mimeTypes[is.type]) {
+            if (!this._mimeTypes[is.type]) {
                 // empty, first chance create sourcebuffer
                 firstInitSegment = true;
                 try {
                     const sb = this._mediaSource.addSourceBuffer(mimeType);
-                    if(this.e) {
+                    if (this.e) {
                         sb.addEventListener('error', this.e.onSourceBufferError);
                         sb.addEventListener('updateend', this.e.onSourceBufferUpdateEnd);
                     }
@@ -253,25 +259,24 @@ class MSEController {
             } else {
                 Log.info(
                     this.TAG,
-                    `Notice: ${is.type} mimeType changed, origin: ${
-                        this._mimeTypes[is.type]
+                    `Notice: ${is.type} mimeType changed, origin: ${this._mimeTypes[is.type]
                     }, target: ${mimeType}`
                 );
             }
             this._mimeTypes[is.type] = mimeType;
         }
 
-        if(!deferred) {
+        if (!deferred) {
             // deferred means this InitSegment has been pushed to pendingSegments queue
             this._pendingSegments[is.type]!.push(is);
         }
-        if(!firstInitSegment) {
+        if (!firstInitSegment) {
             // append immediately only if init segment in subsequence
-            if(this._sourceBuffers[is.type] && !this._sourceBuffers[is.type]!.updating) {
+            if (this._sourceBuffers[is.type] && !this._sourceBuffers[is.type]!.updating) {
                 this._doAppendSegments();
             }
         }
-        if(Browser.safari && is.container === 'audio/mpeg' && is.mediaDuration > 0) {
+        if (Browser.safari && is.container === 'audio/mpeg' && is.mediaDuration > 0) {
             // 'audio/mpeg' track under Safari may cause MediaElement's duration to be NaN
             // Manually correct MediaSource.duration to make progress bar seekable, and report right duration
             this._requireSetMediaDuration = true;
@@ -284,12 +289,12 @@ class MSEController {
         const ms = mediaSegment;
         this._pendingSegments[ms.type]!.push(ms);
 
-        if(this._config.autoCleanupSourceBuffer && this._needCleanupSourceBuffer()) {
+        if (this._config.autoCleanupSourceBuffer && this._needCleanupSourceBuffer()) {
             this._doCleanupSourceBuffer();
         }
 
         const sb = this._sourceBuffers[ms.type];
-        if(sb && !sb.updating && !this._hasPendingRemoveRanges()) {
+        if (sb && !sb.updating && !this._hasPendingRemoveRanges()) {
             this._doAppendSegments();
         }
     }
@@ -297,13 +302,13 @@ class MSEController {
     seek() {
         // remove all appended buffers
         Object.keys(this._sourceBuffers).forEach((type) => {
-            if(!this._sourceBuffers[type]) {
+            if (!this._sourceBuffers[type]) {
                 return;
             }
 
             // abort current buffer append algorithm
             const sb = this._sourceBuffers[type];
-            if(this._mediaSource!.readyState === 'open') {
+            if (this._mediaSource!.readyState === 'open') {
                 try {
                     // If range removal algorithm is running, InvalidStateError will be throwed
                     // Ignore it.
@@ -320,31 +325,31 @@ class MSEController {
             const ps = this._pendingSegments[type];
             ps!.splice(0, ps!.length);
 
-            if(this._mediaSource!.readyState === 'closed') {
+            if (this._mediaSource!.readyState === 'closed') {
                 // Parent MediaSource object has been detached from HTMLMediaElement
                 return;
             }
 
             // record ranges to be remove from SourceBuffer
-            for(let i = 0; i < sb!.buffered.length; i++) {
+            for (let i = 0; i < sb!.buffered.length; i++) {
                 const start = sb!.buffered.start(i);
                 const end = sb!.buffered.end(i);
                 this._pendingRemoveRanges[type]!.push({ start, end });
             }
 
             // if sb is not updating, let's remove ranges now!
-            if(!sb!.updating) {
+            if (!sb!.updating) {
                 this._doRemoveRanges();
             }
 
             // Safari 10 may get InvalidStateError in the later appendBuffer() after SourceBuffer.remove() call
             // Internal parser's state may be invalid at this time. Re-append last InitSegment to workaround.
             // Related issue: https://bugs.webkit.org/show_bug.cgi?id=159230
-            if(Browser.safari) {
+            if (Browser.safari) {
                 const lastInitSegment = this._lastInitSegments[type];
-                if(lastInitSegment) {
+                if (lastInitSegment) {
                     this._pendingSegments[type]!.push(lastInitSegment);
-                    if(!sb!.updating) {
+                    if (!sb!.updating) {
                         this._doAppendSegments();
                     }
                 }
@@ -355,15 +360,15 @@ class MSEController {
     endOfStream() {
         const ms = this._mediaSource;
         const sb = this._sourceBuffers;
-        if(!ms || ms.readyState !== 'open') {
-            if(ms && ms.readyState === 'closed' && this._hasPendingSegments()) {
+        if (!ms || ms.readyState !== 'open') {
+            if (ms && ms.readyState === 'closed' && this._hasPendingSegments()) {
                 // If MediaSource hasn't turned into open state, and there're pending segments
                 // Mark pending endOfStream, defer call until all pending segments appended complete
                 this._hasPendingEos = true;
             }
             return;
         }
-        if((sb.video && sb.video.updating) || (sb.audio && sb.audio.updating)) {
+        if ((sb.video && sb.video.updating) || (sb.audio && sb.audio.updating)) {
             // If any sourcebuffer is updating, defer endOfStream operation
             // See _onSourceBufferUpdateEnd()
             this._hasPendingEos = true;
@@ -382,7 +387,7 @@ class MSEController {
 
     private _needCleanupSourceBuffer() {
         let res = false;
-        if(!this._config.autoCleanupSourceBuffer) {
+        if (!this._config.autoCleanupSourceBuffer) {
             return res;
         }
 
@@ -390,10 +395,10 @@ class MSEController {
 
         Object.keys(this._sourceBuffers).some((type) => {
             const sb = this._sourceBuffers[type];
-            if(sb) {
+            if (sb) {
                 const { buffered } = sb;
-                if(buffered.length >= 1) {
-                    if(
+                if (buffered.length >= 1) {
+                    if (
                         currentTime - buffered.start(0)
                         >= this._config.autoCleanupMaxBackwardDuration
                     ) {
@@ -411,17 +416,17 @@ class MSEController {
         const { currentTime } = this._mediaElement || { currentTime: 0 };
         Object.keys(this._sourceBuffers).forEach((type) => {
             const sb = this._sourceBuffers[type];
-            if(sb) {
+            if (sb) {
                 const { buffered } = sb;
                 let doRemove = false;
 
-                for(let i = 0; i < buffered.length; i++) {
+                for (let i = 0; i < buffered.length; i++) {
                     const start = buffered.start(i);
                     const end = buffered.end(i);
 
-                    if(start <= currentTime && currentTime < end + 3) {
+                    if (start <= currentTime && currentTime < end + 3) {
                         // padding 3 seconds
-                        if(currentTime - start >= this._config.autoCleanupMaxBackwardDuration) {
+                        if (currentTime - start >= this._config.autoCleanupMaxBackwardDuration) {
                             doRemove = true;
                             const removeEnd = currentTime - this._config.autoCleanupMinBackwardDuration;
                             this._pendingRemoveRanges[type]!.push({
@@ -429,13 +434,13 @@ class MSEController {
                                 end: removeEnd
                             });
                         }
-                    } else if(end < currentTime) {
+                    } else if (end < currentTime) {
                         doRemove = true;
                         this._pendingRemoveRanges[type]!.push({ start, end });
                     }
                 }
 
-                if(doRemove && !sb.updating) {
+                if (doRemove && !sb.updating) {
                     this._doRemoveRanges();
                 }
             }
@@ -444,19 +449,19 @@ class MSEController {
 
     private _updateMediaSourceDuration() {
         const sb = this._sourceBuffers;
-        if(
+        if (
             this._mediaElement
             && (this._mediaElement.readyState === 0 || this._mediaSource!.readyState !== 'open')
         ) {
             return;
         }
-        if((sb.video && sb.video.updating) || (sb.audio && sb.audio.updating)) {
+        if ((sb.video && sb.video.updating) || (sb.audio && sb.audio.updating)) {
             return;
         }
 
         const current = this._mediaSource!.duration;
         const target = this._pendingMediaDuration;
-        if(target > 0 && (Number.isNaN(current) || target > current)) {
+        if (target > 0 && (Number.isNaN(current) || target > current)) {
             Log.info(this.TAG, `Update MediaSource duration from ${current} to ${target}`);
             this._mediaSource!.duration = target;
         }
@@ -467,12 +472,12 @@ class MSEController {
 
     private _doRemoveRanges() {
         Object.keys(this._pendingRemoveRanges).forEach((type: string) => {
-            if(!this._sourceBuffers[type] || this._sourceBuffers[type]!.updating) {
+            if (!this._sourceBuffers[type] || this._sourceBuffers[type]!.updating) {
                 return;
             }
             const sb = this._sourceBuffers[type];
             const ranges = this._pendingRemoveRanges[type];
-            while(ranges && ranges.length && !sb!.updating) {
+            while (ranges && ranges.length && !sb!.updating) {
                 const range = ranges.shift();
                 sb!.remove(range!.start, range!.end);
             }
@@ -482,20 +487,20 @@ class MSEController {
     private _doAppendSegments() {
         const pendingSegments = this._pendingSegments;
         Object.keys(pendingSegments).forEach((type) => {
-            if(!this._sourceBuffers[type] || this._sourceBuffers[type]!.updating) {
+            if (!this._sourceBuffers[type] || this._sourceBuffers[type]!.updating) {
                 return;
             }
 
-            if(pendingSegments[type]!.length > 0) {
+            if (pendingSegments[type]!.length > 0) {
                 const segment = pendingSegments[type]!.shift();
 
-                if(segment && (segment as any).timestampOffset) {
+                if (segment && (segment as any).timestampOffset) {
                     // For MPEG audio stream in MSE, if unbuffered-seeking occurred
                     // We need explicitly set timestampOffset to the desired point in timeline for mpeg SourceBuffer.
                     const currentOffset = this._sourceBuffers[type]!.timestampOffset;
                     const targetOffset = (segment as any).timestampOffset / 1000; // in seconds
                     const delta = Math.abs(currentOffset - targetOffset);
-                    if(delta > 0.1) {
+                    if (delta > 0.1) {
                         // If time delta > 100ms
                         Log.info(
                             this.TAG,
@@ -506,7 +511,7 @@ class MSEController {
                     delete (segment as any).timestampOffset;
                 }
 
-                if(!segment!.data || segment!.data.byteLength === 0) {
+                if (!segment!.data || segment!.data.byteLength === 0) {
                     // Ignore empty buffer
                     return;
                 }
@@ -514,12 +519,12 @@ class MSEController {
                 try {
                     this._sourceBuffers[type]!.appendBuffer(segment!.data);
                     this._isBufferFull = false;
-                    if(type === 'video' && Object.prototype.hasOwnProperty.call(segment, 'info')) {
+                    if (type === 'video' && Object.prototype.hasOwnProperty.call(segment, 'info')) {
                         this._idrList.appendArray((segment as MediaSegment).info.syncPoints);
                     }
                 } catch (error) {
                     this._pendingSegments[type]!.unshift(segment!);
-                    if(error.code === 22) {
+                    if (error.code === 22) {
                         // QuotaExceededError
                         /* Notice that FireFox may not throw QuotaExceededError if SourceBuffer is full
                          * Currently we can only do lazy-load to avoid SourceBuffer become scattered.
@@ -531,7 +536,7 @@ class MSEController {
                          */
 
                         // report buffer full, abort network IO
-                        if(!this._isBufferFull) {
+                        if (!this._isBufferFull) {
                             this._emitter.emit(Events.BUFFER_FULL);
                         }
                         this._isBufferFull = true;
@@ -548,22 +553,23 @@ class MSEController {
     }
 
     private _onSourceOpen() {
+        console.info('debubg_Hjplayer_onSourceOpen', +new Date());
         Log.info(this.TAG, 'MediaSource onSourceOpen');
 
-        if(this.e) {
-            this._mediaSource!.removeEventListener('sourceopen', this.e.onSourceOpen);
+        if (this.e) {
+            // this._mediaSource!.removeEventListener('sourceopen', this.e.onSourceOpen);
         }
 
         // deferred sourcebuffer creation / initialization
-        if(this._pendingSourceBufferInit.length > 0) {
+        if (this._pendingSourceBufferInit.length > 0) {
             const pendings = this._pendingSourceBufferInit;
-            while(pendings.length) {
+            while (pendings.length) {
                 const segment = pendings.shift();
                 this.appendInitSegment(segment!, true);
             }
         }
         // there may be some pending media segments, append them
-        if(this._hasPendingSegments()) {
+        if (this._hasPendingSegments()) {
             this._doAppendSegments();
         }
         this._emitter.emit(Events.SOURCE_OPEN);
@@ -577,7 +583,7 @@ class MSEController {
     private _onSourceClose() {
         // fired on detaching from media element
         Log.info(this.TAG, 'MediaSource onSourceClose');
-        if(this._mediaSource && this.e != null) {
+        if (this._mediaSource && this.e != null) {
             this._mediaSource.removeEventListener('sourceopen', this.e.onSourceOpen);
             this._mediaSource.removeEventListener('sourceended', this.e.onSourceEnded);
             this._mediaSource.removeEventListener('sourceclose', this.e.onSourceClose);
@@ -595,13 +601,13 @@ class MSEController {
     }
 
     private _onSourceBufferUpdateEnd() {
-        if(this._requireSetMediaDuration) {
+        if (this._requireSetMediaDuration) {
             this._updateMediaSourceDuration();
-        } else if(this._hasPendingRemoveRanges()) {
+        } else if (this._hasPendingRemoveRanges()) {
             this._doRemoveRanges();
-        } else if(this._hasPendingSegments()) {
+        } else if (this._hasPendingSegments()) {
             this._doAppendSegments();
-        } else if(this._hasPendingEos) {
+        } else if (this._hasPendingEos) {
             this.endOfStream();
         }
         this._emitter.emit(Events.UPDATE_END);
