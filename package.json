@@ -1,5 +1,5 @@
 {
-  "name": "hjplayer",
+  "name": "@chenge/hjplayer",
   "version": "1.0.4",
   "description": "hjplayer, a HTML5 Player, can play flv and hls by Media Source Extension, based on typescript;",
   "main": "./dist/hjplayer.js",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/huajiaofrontend/HJPlayer.git"
+    "url": "git+https://github.com/getchenge/HJPlayer.git"
   },
   "keywords": [
     "HJPlayer",
