@@ -84,9 +84,9 @@ class NativePlayer {
             this.detachMediaElement();
         }
         this.e = null;
-        delete this.mediaConfig;
+        delete (this as any).mediaConfig;
         this._emitter.removeAllListeners();
-        delete this._emitter;
+        delete (this as any)._emitter;
     }
 
     on(event: string, listener: EventEmitter.ListenerFn) {

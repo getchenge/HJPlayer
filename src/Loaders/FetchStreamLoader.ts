@@ -68,7 +68,7 @@ class FetchStreamLoader extends BaseLoader {
         try {
             const isWorkWellEdge = Browser.msedge && Browser.version.minor >= 15048;
             const browserNotBlacklisted = Browser.msedge ? isWorkWellEdge : true;
-            isSupport = GlobalEnvironment.fetch && (GlobalEnvironment as any).ReadableStream && browserNotBlacklisted;
+            isSupport = (GlobalEnvironment as any).fetch && (GlobalEnvironment as any).ReadableStream && browserNotBlacklisted;
         } catch (e) {
             isSupport = false;
         }
@@ -91,11 +91,11 @@ class FetchStreamLoader extends BaseLoader {
     destroy() {
         this.abort();
         this.eventEmitter.removeAllListeners();
-        delete this.eventEmitter;
-        delete this.mediaConfig;
-        delete this.seekRange;
-        delete this.seekHandler;
-        delete this.userConfig;
+        delete (this as any).eventEmitter;
+        delete (this as any).mediaConfig;
+        delete (this as any).seekRange;
+        delete (this as any).seekHandler;
+        delete (this as any).userConfig;
         this._status = LoaderStatus.kIdle;
         this._onContentLengthKnown = null;
         this._onURLRedirect = null;
@@ -112,7 +112,7 @@ class FetchStreamLoader extends BaseLoader {
         this.seekRange = seekRange;
         let sourceURL = mediaConfig.url;
 
-        if(this.userConfig.reuseRedirectedURL && mediaConfig.redirectedURL !== undefined) {
+        if (this.userConfig.reuseRedirectedURL && mediaConfig.redirectedURL !== undefined) {
             sourceURL = mediaConfig.redirectedURL;
         }
 
@@ -128,28 +128,28 @@ class FetchStreamLoader extends BaseLoader {
             credentials: 'same-origin' // 控制cookie，同源发送
         };
 
-        if(typeof seekConfig.headers === 'object') {
+        if (typeof seekConfig.headers === 'object') {
             const configHeaders = seekConfig.headers;
             Object.keys(configHeaders).forEach((key) => {
                 headers.append(key, (configHeaders as any)[key]);
             });
         }
 
-        if(typeof this.userConfig.headers === 'object') {
+        if (typeof this.userConfig.headers === 'object') {
             Object.keys(this.userConfig.headers).forEach((key) => {
                 this.userConfig.headers && headers.append(key, this.userConfig.headers[key]);
             });
         }
 
-        if(mediaConfig.cors === false) {
+        if (mediaConfig.cors === false) {
             params.mode = 'same-origin';
         }
 
-        if(mediaConfig.withCredentials) {
+        if (mediaConfig.withCredentials) {
             params.credentials = 'include'; // 发送cookie
         }
 
-        if(mediaConfig.referrerPolicy) {
+        if (mediaConfig.referrerPolicy) {
             params.referrerPolicy = mediaConfig.referrerPolicy;
         }
 
@@ -157,14 +157,14 @@ class FetchStreamLoader extends BaseLoader {
 
         GlobalEnvironment.fetch(seekConfig.url, params as any)
             .then((res) => {
-                if(this.requestAbort) {
+                if (this.requestAbort) {
                     this.requestAbort = false;
                     this._status = LoaderStatus.kIdle;
                     return;
                 }
-                if(res && res.ok && (res.status >= 200 && res.status <= 299)) {
-                    if(res.url !== seekConfig.url) {
-                        if(this._onURLRedirect) {
+                if (res && res.ok && (res.status >= 200 && res.status <= 299)) {
+                    if (res.url !== seekConfig.url) {
+                        if (this._onURLRedirect) {
                             const redirectedURL: string = this.seekHandler.removeURLParameters(
                                 res.url
                             );
@@ -173,21 +173,21 @@ class FetchStreamLoader extends BaseLoader {
                     }
 
                     const lengthHeader: string | null = res.headers.get('Content-Length');
-                    if(lengthHeader !== null) {
+                    if (lengthHeader !== null) {
                         this.contentLength = parseInt(lengthHeader, 10);
-                        if(this.contentLength !== 0) {
-                            if(this._onContentLengthKnown) {
+                        if (this.contentLength !== 0) {
+                            if (this._onContentLengthKnown) {
                                 this._onContentLengthKnown(this.contentLength);
                             }
                         }
                     }
-                    if(res === null || res.body === null) {
+                    if (res === null || res.body === null) {
                         return;
                     }
                     return this._pump.call(this, res.body.getReader());
                 }
                 this._status = LoaderStatus.kError;
-                if(this._onError) {
+                if (this._onError) {
                     this._onError(LoaderErrors.HTTP_STATUS_CODE_INVALID, {
                         code: res.status,
                         reason: res.statusText
@@ -200,7 +200,7 @@ class FetchStreamLoader extends BaseLoader {
             })
             .catch((e) => {
                 this._status = LoaderStatus.kError;
-                if(this._onError) {
+                if (this._onError) {
                     this._onError(LoaderErrors.EXCEPTION, { code: -1, reason: e.message });
                 } else {
                     throw e;
@@ -212,20 +212,20 @@ class FetchStreamLoader extends BaseLoader {
         return reader
             .read()
             .then((result) => {
-                if(result.done) {
-                    if(this.contentLength !== null && this.receivedLength < this.contentLength) {
+                if (result.done) {
+                    if (this.contentLength !== null && this.receivedLength < this.contentLength) {
                         this._status = LoaderStatus.kError;
                         const type = LoaderErrors.EARLY_EOF;
                         const info = { code: -1, reason: 'Fetch stream meet Early-EOF' };
 
-                        if(this._onError) {
+                        if (this._onError) {
                             this._onError(type, info);
                         } else {
                             throw new RuntimeException(info.reason);
                         }
                     } else {
                         this._status = LoaderStatus.kComplete;
-                        if(this._onComplete) {
+                        if (this._onComplete) {
                             this._onComplete(
                                 this.seekRange.from,
                                 this.seekRange.from + this.receivedLength - 1
@@ -233,7 +233,7 @@ class FetchStreamLoader extends BaseLoader {
                         }
                     }
                 } else {
-                    if(this.requestAbort === true) {
+                    if (this.requestAbort === true) {
                         this.requestAbort = false;
                         this._status = LoaderStatus.kComplete;
                         return reader.cancel();
@@ -244,21 +244,21 @@ class FetchStreamLoader extends BaseLoader {
                     const byteStart = this.seekRange.from + this.receivedLength;
                     this.receivedLength += chunk.byteLength;
 
-                    if(this._onDataArrival) {
+                    if (this._onDataArrival) {
                         this._onDataArrival(chunk, byteStart, this.receivedLength);
                     }
                     this._pump(reader);
                 }
             })
             .catch((e) => {
-                if(e.code === 11 && Browser.msedge) {
+                if (e.code === 11 && Browser.msedge) {
                     return;
                 }
                 this._status = LoaderStatus.kError;
                 let type: number | string = LoaderErrors.EXCEPTION;
                 let info: { reason: string; code: number } = { code: e.code || -1, reason: e.message || 'readable stream exception' };
 
-                if(
+                if (
                     (e.code === 19 || e.message === 'network error')
                     && (this.contentLength === null
                         || (this.contentLength !== null && this.receivedLength < this.contentLength))
@@ -267,10 +267,10 @@ class FetchStreamLoader extends BaseLoader {
                     info = { code: e.code, reason: e.message };
                 }
 
-                if(this._onError) {
+                if (this._onError) {
                     this._onError(type, info);
                 } else {
-                    if(!info) {
+                    if (!info) {
                         return;
                     }
                     throw new RuntimeException(info.reason);

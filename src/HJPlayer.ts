@@ -34,34 +34,35 @@ class HJPlayer {
     userConfig: HJPlayerConfig | null
 
     constructor(mediaConfig: MediaConfig, userConfig?: UserConfig) {
+        console.info("DEBUG_HJPlayer__init", { mediaConfig, userConfig });
         this.Tag = 'HJPlayer';
         this.mediaConfig = mediaConfig;
         this.userConfig = { ...DefaultConfig, ...userConfig };
         HJPlayerLogger.config = this.userConfig;
         HJPlayerLogger.GLOBAL_TAG = this.userConfig.GLOBAL_TAG;
 
-        if(!this.mediaConfig) {
+        if (!this.mediaConfig) {
             throw new Error('mediaConfig is needed');
         }
 
-        if(!this.mediaConfig.type || typeof this.mediaConfig.type !== 'string') {
+        if (!this.mediaConfig.type || typeof this.mediaConfig.type !== 'string') {
             throw new Error('mediaConfig need correct type option');
         }
 
-        if(!this.mediaConfig.url || typeof this.mediaConfig.url !== 'string') {
+        if (!this.mediaConfig.url || typeof this.mediaConfig.url !== 'string') {
             throw new Error('mediaConfig need correct url option');
         }
 
         const mediaType = this.mediaConfig.type.toLowerCase();
 
-        switch(mediaType) {
-        case 'mp4':
-            return new NativePlayer(this.mediaConfig, this.userConfig);
-        case 'flv':
-        case 'm3u8':
-            return new MSEPlayer(this.mediaConfig, this.userConfig);
-        default:
-            throw new Error('unsupport media type');
+        switch (mediaType) {
+            case 'mp4':
+                return new NativePlayer(this.mediaConfig, this.userConfig);
+            case 'flv':
+            case 'm3u8':
+                return new MSEPlayer(this.mediaConfig, this.userConfig);
+            default:
+                throw new Error('unsupport media type');
         }
     }
 

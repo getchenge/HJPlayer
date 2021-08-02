@@ -57,7 +57,7 @@ class BaseLoader implements BaseLoaderInterface {
 
     destroy() {
         this.eventEmitter.removeAllListeners();
-        delete this.eventEmitter;
+        delete (this as any).eventEmitter;
         this._status = LoaderStatus.kIdle;
         this._onContentLengthKnown = null;
         this._onURLRedirect = null;

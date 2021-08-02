@@ -11,6 +11,7 @@ import Browser from '../Utils/Browser';
 import Logger from '../Utils/Logger';
 import MediaInfoObject from '../Interfaces/MediaInfoObject';
 import StatisticsInfoObject from '../Interfaces/StatisticsInfo';
+import SeekpointRecord from '../Interfaces/SeekpointRecord';
 import Metadata from '../Interfaces/Metadata';
 import ErrorData from '../Interfaces/ErrorData';
 import HJPlayerConfig from '../Interfaces/HJPlayerConfig';
@@ -199,9 +200,9 @@ class MSEPlayer {
         this._statisticsInfo = null;
         this._mediaInfo = null;
         this._seekpointRecord = null;
-        delete this._emitter;
-        delete this.mediaConfig;
-        delete this.userConfig;
+        delete (this as any)._emitter;
+        delete (this as any).mediaConfig;
+        delete (this as any).userConfig;
         this._emitter = null;
         this.mediaConfig = null;
         this.userConfig = null;
@@ -256,6 +257,7 @@ class MSEPlayer {
         this._msectl!.on(Events.UPDATE_END, this._onmseUpdateEnd.bind(this));
         this._msectl!.on(Events.BUFFER_FULL, this._onmseBufferFull.bind(this));
         this._msectl!.on(Events.SOURCE_OPEN, () => {
+            console.info('debug_Hjplayer_SOURCE_OPEN', +new Date());
             this._mseSourceOpened = true;
             if(this._hasPendingLoad) {
                 this._hasPendingLoad = false;
@@ -304,6 +306,7 @@ class MSEPlayer {
      * 加载媒体文件, 并绑定回调事件
      */
     load() {
+        console.info('debug_HjPlayer_loading', +new Date());
         if(!this._mediaElement) {
             throw new IllegalStateException('HTMLMediaElement must be attached before load()!');
         }

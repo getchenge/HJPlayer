@@ -106,13 +106,13 @@ class MP4Remuxer {
     static Tag: 'MP4Remuxer'
 
     destroy() {
-        delete this.config;
-        delete this.typeSupported;
+        delete (this as any).config;
+        delete (this as any).typeSupported;
         this.emitter.removeAllListeners();
-        delete this.emitter;
-        delete this.config;
-        delete this.typeSupported;
-        delete this.agentInfo;
+        delete (this as any).emitter;
+        delete (this as any).config;
+        delete (this as any).typeSupported;
+        delete (this as any).agentInfo;
     }
 
     resetTimeStamp(defaultTimeStamp: number | undefined) {

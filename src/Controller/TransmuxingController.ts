@@ -168,7 +168,7 @@ class TransmuxingController {
     destroy() {
         this._mediaInfo = null;
 
-        delete this._mediaDataSource;
+        delete (this as any)._mediaDataSource;
 
         if(this._statisticsReportTimer) {
             this._disableStatisticsReporter();
@@ -186,7 +186,7 @@ class TransmuxingController {
         }
 
         this._emitter.removeAllListeners();
-        delete this._emitter;
+        delete (this as any)._emitter;
     }
 
     on(event: string, listener: EventEmitter.ListenerFn) {

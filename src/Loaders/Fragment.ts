@@ -1,7 +1,7 @@
 import URLToolkit from 'url-toolkit';
 import logger from '../Utils/Logger';
 import LevelKey from '../Parser/LevelKey';
-import { PlaylistLevelType } from '../Interfaces/loader';
+import { PlaylistLevelType } from '../Interfaces/Loader';
 
 export enum ElementaryStreamTypes {
     AUDIO = 'audio',

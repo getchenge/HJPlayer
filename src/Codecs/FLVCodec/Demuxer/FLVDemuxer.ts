@@ -15,7 +15,7 @@ import {
     VideoMediaData
 } from '../Interface';
 import AMF from './AmfParser';
-import SPSParser from './SPSParser';
+import SPSParser from './SpsParser';
 import Log from '../../../Utils/Logger';
 import Events from '../Events/index';
 import { ErrorTypes, ErrorDetails } from '../errors';
@@ -1306,7 +1306,7 @@ class FLVDemuxer {
 
     destroy() {
         this.eventEmitter.removeAllListeners();
-        delete this.eventEmitter;
+        delete (this as any).eventEmitter;
     }
 
     // timestamp base for output samples, must be in milliseconds

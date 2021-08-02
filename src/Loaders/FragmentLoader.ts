@@ -137,11 +137,11 @@ class FragmentLoader extends BaseLoader {
         this.loader = null;
         this.bitrateTest = false;
         this.eventEmitter.removeAllListeners();
-        delete this.masterLevels;
-        delete this.eventEmitter;
-        delete this.stashFrag;
-        delete this.levels;
-        delete this.stats;
+        delete (this as any).masterLevels;
+        delete (this as any).eventEmitter;
+        delete (this as any).stashFrag;
+        delete (this as any).levels;
+        delete (this as any).stats;
     }
 
     /**

@@ -86,9 +86,9 @@ class TSCodec implements CodecInterface {
     destroy() {
         this.eventEmitter.removeAllListeners();
         this._demuxer.destroy();
-        delete this._demuxer;
-        delete this._config;
-        delete this.eventEmitter;
+        delete (this as any)._demuxer;
+        delete (this as any)._config;
+        delete (this as any).eventEmitter;
     }
 
     /**

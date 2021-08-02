@@ -82,7 +82,7 @@ class Transmuxer {
                     this.Tag,
                     'Error while initialize transmuxing worker, fallback to inline transmuxing'
                 );
-                delete this._worker;
+                delete (this as any)._worker;
                 this._controller = new TransmuxingController(
                     mediaDataSource,
                     config,
@@ -130,10 +130,10 @@ class Transmuxer {
             }
         } else {
             this._controller && this._controller.destroy();
-            delete this._controller;
+            delete (this as any)._controller;
         }
         this._emitter.removeAllListeners();
-        delete this._emitter;
+        delete (this as any)._emitter;
     }
 
     on(event: string, listener: EventEmitter.ListenerFn) {
@@ -334,7 +334,7 @@ class Transmuxer {
         if(message.msg === 'destroyed' || this._workerDestroying) {
             this._workerDestroying = false;
             this._worker && this._worker.terminate();
-            delete this._worker;
+            delete (this as any)._worker;
             return;
         }
 

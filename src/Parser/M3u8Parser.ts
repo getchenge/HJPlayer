@@ -4,8 +4,8 @@ import Level from './Level';
 import LevelKey from './LevelKey';
 import AttrList from '../Utils/attr-list';
 import logger from '../Utils/Logger';
-import { MediaPlaylist, AudioGroup, MediaPlaylistType } from '../Interfaces/media-playlist';
-import { PlaylistLevelType, SingleLevels } from '../Interfaces/loader';
+import { MediaPlaylist, AudioGroup, MediaPlaylistType } from '../Interfaces/Media-playlist';
+import { PlaylistLevelType, SingleLevels } from '../Interfaces/Loader';
 import { isCodecType, CodecType } from '../Utils/codecs';
 
 /* eslint-disable */

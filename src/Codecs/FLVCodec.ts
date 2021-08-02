@@ -86,7 +86,7 @@ class FLVCodec implements CodecInterface {
     destroy() {
         this.eventEmitter.removeAllListeners();
         this._demuxer.destroy();
-        delete this.eventEmitter;
+        delete (this as any).eventEmitter;
     }
 
     set timestampBase(base: number) {

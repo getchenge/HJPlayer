@@ -168,9 +168,9 @@ export default class PlaylistLoader {
         this._requestAbort = true;
         clearInterval(this.timer);
         this._emitter && this._emitter.removeAllListeners();
-        delete this._emitter;
-        delete this.dataSource;
-        delete this.currentPlaylist;
+        delete (this as any)._emitter;
+        delete (this as any).dataSource;
+        delete (this as any).currentPlaylist;
         Logger.info(this.Tag, `${this.Tag} has been abort`);
     }
 
