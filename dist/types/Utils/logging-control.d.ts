@@ -2,13 +2,20 @@ import EventEmitter from 'eventemitter3';
 import UserConfig from '../Interfaces/UserConfig';
 declare class LoggingControl {
     static emitter: EventEmitter;
-    static forceGlobalTag: boolean;
-    static globalTag: string;
-    static enableAll: boolean | undefined;
-    static enableDebug: boolean | undefined;
-    static enableInfo: boolean | undefined;
-    static enableWarn: boolean | undefined;
-    static enableError: boolean | undefined;
+    static get forceGlobalTag(): boolean;
+    static set forceGlobalTag(enable: boolean);
+    static get globalTag(): string;
+    static set globalTag(tag: string);
+    static get enableAll(): boolean | undefined;
+    static set enableAll(enable: boolean | undefined);
+    static get enableDebug(): boolean | undefined;
+    static set enableDebug(enable: boolean | undefined);
+    static get enableInfo(): boolean | undefined;
+    static set enableInfo(enable: boolean | undefined);
+    static get enableWarn(): boolean | undefined;
+    static set enableWarn(enable: boolean | undefined);
+    static get enableError(): boolean | undefined;
+    static set enableError(enable: boolean | undefined);
     static getConfig(): {
         globalTag: string;
         forceGlobalTag: boolean | undefined;

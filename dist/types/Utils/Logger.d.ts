@@ -6,9 +6,11 @@ import LogConfig from '../Interfaces/LogConfig';
 declare class Logger {
     static _config: LogConfig;
     static _tag: string;
-    static GLOBAL_TAG: string;
-    static config: LogConfig;
-    static readonly emitter: EventEmitter<string | symbol>;
+    static get GLOBAL_TAG(): string;
+    static set GLOBAL_TAG(TAG: string);
+    static get config(): LogConfig;
+    static set config(config: LogConfig);
+    static get emitter(): EventEmitter<string | symbol, any>;
     static on(eventName: string, callback: EventEmitter.ListenerFn): void;
     static once(eventName: string, callback: EventEmitter.ListenerFn): void;
     static off(eventName: string, callback: EventEmitter.ListenerFn): void;

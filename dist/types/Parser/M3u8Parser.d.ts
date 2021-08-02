@@ -1,6 +1,6 @@
 import Level from './Level';
-import { MediaPlaylist, AudioGroup, MediaPlaylistType } from '../Interfaces/media-playlist';
-import { PlaylistLevelType, SingleLevels } from '../Interfaces/loader';
+import { MediaPlaylist, AudioGroup, MediaPlaylistType } from '../Interfaces/Media-playlist';
+import { PlaylistLevelType, SingleLevels } from '../Interfaces/Loader';
 export default class M3U8Parser {
     static Tag: string;
     static findGroup(groups: Array<AudioGroup>, mediaGroupId: string): AudioGroup | null;

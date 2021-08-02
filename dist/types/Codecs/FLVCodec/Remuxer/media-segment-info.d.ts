@@ -24,8 +24,8 @@ export declare class MediaSegmentInfoList {
     _list: MediaSegmentInfo[];
     _lastAppendLocation: number;
     constructor(type: string);
-    readonly type: string;
-    readonly length: number;
+    get type(): string;
+    get length(): number;
     isEmpty(): boolean;
     clear(): void;
     _searchNearestSegmentBefore(originalBeginDts: any): number;

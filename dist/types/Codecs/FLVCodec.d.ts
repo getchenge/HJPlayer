@@ -51,14 +51,14 @@ declare class FLVCodec implements CodecInterface {
      * 销毁功能
      */
     destroy(): void;
-    timestampBase: number;
-    overridedDuration: number;
-    overridedHasAudio: boolean;
-    overridedHasVideo: boolean;
+    set timestampBase(base: number);
+    set overridedDuration(duration: number);
+    set overridedHasAudio(hasAudio: boolean);
+    set overridedHasVideo(hasVideo: boolean);
     /**
      * 获取转码事件
      */
-    static readonly Events: {
+    static get Events(): {
         ERROR: string;
         GET_SEI_INFO: string;
         FRAG_PARSED: string;
@@ -72,8 +72,8 @@ declare class FLVCodec implements CodecInterface {
         INIT_SEGMENT: string;
         MEDIA_SEGMENT: string;
     };
-    readonly config: Record<string, any>;
-    static readonly typeSupportFunc: () => import("./FLVCodec/Interface").typeSupported;
+    get config(): Record<string, any>;
+    static get typeSupportFunc(): () => import("./FLVCodec/Interface").typeSupported;
     flushStashedSamples(): void;
     bindDataSource(dataSource: any): this;
     parseChunks(data: ArrayBuffer, byteStart: number): number;

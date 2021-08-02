@@ -37,5 +37,5 @@ export default class Level {
      */
     version: null | string | number;
     constructor(baseUrl: string);
-    readonly hasProgramDateTime: boolean;
+    get hasProgramDateTime(): boolean;
 }

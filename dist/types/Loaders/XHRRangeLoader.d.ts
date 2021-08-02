@@ -79,7 +79,7 @@ declare class RangeLoader extends BaseLoader {
     static isSupported(): boolean;
     constructor(seekHandler: RangeSeekHandler, userConfig: UserConfig);
     destory(): void;
-    readonly currentSpeed: number;
+    get currentSpeed(): number;
     startLoad(mediaConfig: MediaConfig, seekRange: SeekRange): void;
     /**
      * 请求子range

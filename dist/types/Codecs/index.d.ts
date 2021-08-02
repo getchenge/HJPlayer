@@ -14,10 +14,10 @@ declare class Codec {
     /**
      * 获取FLVCodec
      */
-    static readonly FLVCodec: typeof FLVCodec;
+    static get FLVCodec(): typeof FLVCodec;
     /**
      * 获取TSCodec
      */
-    static readonly TSCodec: typeof TSCodec;
+    static get TSCodec(): typeof TSCodec;
 }
 export default Codec;

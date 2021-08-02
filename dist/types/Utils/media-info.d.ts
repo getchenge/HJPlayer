@@ -1,4 +1,4 @@
-import { AudioMediaData } from '../Codecs/FLVCodec/interface';
+import { AudioMediaData } from '../Codecs/FLVCodec/Interface';
 declare class MediaInfo {
     mimeType: string | null;
     duration: number | null | undefined;

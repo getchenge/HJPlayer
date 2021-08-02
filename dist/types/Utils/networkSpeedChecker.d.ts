@@ -12,8 +12,8 @@ declare class NetworkSpeeder {
      * @param bytes 从loader添加的数据长度
      */
     addBytes(bytes: number): void;
-    readonly currentKBps: number;
-    readonly lastSecondKBps: number;
-    readonly averageKBps: number;
+    get currentKBps(): number;
+    get lastSecondKBps(): number;
+    get averageKBps(): number;
 }
 export default NetworkSpeeder;

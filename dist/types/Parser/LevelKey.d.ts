@@ -6,5 +6,5 @@ export default class LevelKey {
     baseuri: string;
     reluri: string;
     constructor(baseURI: string, relativeURI: string);
-    readonly uri: string;
+    get uri(): string;
 }

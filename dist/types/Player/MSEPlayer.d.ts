@@ -136,44 +136,47 @@ declare class MSEPlayer {
     /**
      * 返回当前播放器类型
      */
-    readonly type: string;
+    get type(): string;
     /**
      * 返回媒体元素已缓存的时间段
      */
-    readonly buffered: TimeRanges | null;
+    get buffered(): TimeRanges | null;
     /**
      * 返回媒体元素加载的时长或者整个媒体文件的时长
      */
-    readonly duration: number;
+    get duration(): number;
     /**
      * 获取媒体元素的声音大小
      */
+    get volume(): number;
     /**
-    * 设置媒体元素的声音
-    */
-    volume: number;
+     * 设置媒体元素的声音
+     */
+    set volume(value: number);
     /**
      * 获取媒体元素是否静音
      */
+    get muted(): boolean;
     /**
-    * 设置媒体静音
-    */
-    muted: boolean;
+     * 设置媒体静音
+     */
+    set muted(muted: boolean);
     /**
      * 获取媒体元素当前播放的时间点
      */
+    get currentTime(): number;
     /**
-    * 设置媒体元素的 currentTime
-    */
-    currentTime: number;
+     * 设置媒体元素的 currentTime
+     */
+    set currentTime(seconds: number);
     /**
      * 获取媒体文件信息
      */
-    readonly mediaInfo: {};
+    get mediaInfo(): {};
     /**
      * 获取播放器的统计信息
      */
-    readonly statisticsInfo: {
+    get statisticsInfo(): {
         currentSegmentIndex?: number | undefined;
         decodedFrames?: number | undefined;
         droppedFrames?: number | undefined;

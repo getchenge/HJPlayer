@@ -42,7 +42,8 @@ declare class FragmentLoader extends BaseLoader {
     on(eventName: string, callback: EventEmitter.ListenerFn): void;
     once(eventName: string, callback: EventEmitter.ListenerFn): void;
     off(eventName: string, callback?: EventEmitter.ListenerFn): void;
-    onComplete: Function | null;
+    get onComplete(): Function | null;
+    set onComplete(callback: Function | null);
     destroy(): void;
     /**
      * 取消清秀

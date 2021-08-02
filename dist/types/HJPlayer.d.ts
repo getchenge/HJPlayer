@@ -30,7 +30,7 @@ declare class HJPlayer {
     /**
      * 事件集合
      */
-    static readonly Events: {
+    static get Events(): {
         INIT_SEGMENT: string;
         MEDIA_SEGMENT: string;
         GET_SEI_INFO: string;
@@ -62,7 +62,7 @@ declare class HJPlayer {
     /**
      * 错误集合
      */
-    static readonly Errors: {
+    static get Errors(): {
         UN_SUPPORT_MEDIA: string;
         NETWORK_ERROR: string;
         TRANSMUXING_ERROR: string;
@@ -82,23 +82,23 @@ declare class HJPlayer {
     /**
      * 解码器
      */
-    static readonly Codec: typeof HJPlayerCodec;
+    static get Codec(): typeof HJPlayerCodec;
     /**
      * 日志器
      */
-    static readonly Logger: typeof HJPlayerLogger;
+    static get Logger(): typeof HJPlayerLogger;
     /**
      * HLS流加载器
      */
-    static readonly FragmentLoader: typeof FragmentLoader;
+    static get FragmentLoader(): typeof FragmentLoader;
     /**
      * FLV流氏加载器
      */
-    static readonly FetchSteamLoader: typeof FetchSteamLoader;
-    static readonly ParamSeekHandler: typeof ParamSeekHandler;
-    static readonly PlayListLoader: typeof PlayListLoader;
-    static readonly IOController: typeof IOController;
-    static readonly HJPlayerDefaultConfig: {
+    static get FetchSteamLoader(): typeof FetchSteamLoader;
+    static get ParamSeekHandler(): typeof ParamSeekHandler;
+    static get PlayListLoader(): typeof PlayListLoader;
+    static get IOController(): typeof IOController;
+    static get HJPlayerDefaultConfig(): {
         FORCE_GLOBAL_TAG: boolean;
         GLOBAL_TAG: string;
         ENABLE_CALLBACK: boolean;
@@ -131,7 +131,7 @@ declare class HJPlayer {
         maxFragLookUpTolerance: number;
         defaultAudioCodec: undefined;
     };
-    static readonly TransmuxingController: typeof TransmuxingController;
-    static readonly typeSupported: import("./Interfaces/typeSupportData").default;
+    static get TransmuxingController(): typeof TransmuxingController;
+    static get typeSupported(): import("./Interfaces/typeSupportData").default;
 }
 export default HJPlayer;

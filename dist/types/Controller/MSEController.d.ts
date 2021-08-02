@@ -17,8 +17,8 @@ declare class MSEController {
     TAG: string;
     private _config;
     private _emitter;
-    on: <T extends string | symbol>(event: T, fn: EventEmitter.ListenerFn<any[]>, context?: any) => EventEmitter<string | symbol>;
-    off: <T extends string | symbol>(event: T, fn?: EventEmitter.ListenerFn<any[]> | undefined, context?: any, once?: boolean | undefined) => EventEmitter<string | symbol>;
+    on: <T extends string | symbol>(event: T, fn: (...args: any[]) => void, context?: any) => EventEmitter<string | symbol, any>;
+    off: <T extends string | symbol>(event: T, fn?: ((...args: any[]) => void) | undefined, context?: any, once?: boolean | undefined) => EventEmitter<string | symbol, any>;
     e: MSEControllerE;
     private _mediaSourceObjectURL;
     private _mediaSource;

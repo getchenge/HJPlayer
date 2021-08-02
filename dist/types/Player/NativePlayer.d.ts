@@ -66,19 +66,22 @@ declare class NativePlayer {
     unload(): void;
     play(): Promise<void> | undefined;
     pause(): void;
-    readonly type: string;
-    readonly buffered: TimeRanges | null;
-    readonly duration: number;
-    volume: number;
-    muted: boolean;
-    currentTime: number;
-    readonly mediaInfo: {
+    get type(): string;
+    get buffered(): TimeRanges | null;
+    get duration(): number;
+    get volume(): number;
+    set volume(value: number);
+    get muted(): boolean;
+    set muted(muted: boolean);
+    get currentTime(): number;
+    set currentTime(seconds: number);
+    get mediaInfo(): {
         mediaPrefix: string;
         duration?: number;
         width?: number;
         height?: number;
     };
-    readonly statisticsInfo: {
+    get statisticsInfo(): {
         playerType: string;
         url: string;
         decoded?: number;

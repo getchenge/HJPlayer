@@ -1,5 +1,5 @@
 import LevelKey from '../Parser/LevelKey';
-import { PlaylistLevelType } from '../Interfaces/loader';
+import { PlaylistLevelType } from '../Interfaces/Loader';
 export declare enum ElementaryStreamTypes {
     AUDIO = "audio",
     VIDEO = "video"
@@ -27,16 +27,17 @@ export default class Fragment {
     levelkey?: LevelKey;
     loader: any;
     setByteRange(value: string, previousFrag?: Fragment): void;
-    url: string | null;
-    readonly byteRange: number[];
+    get url(): string | null;
+    set url(value: string | null);
+    get byteRange(): number[];
     /**
      * @type {number}
      */
-    readonly byteRangeStartOffset: number;
-    readonly byteRangeEndOffset: number;
-    readonly decryptdata: LevelKey | null;
-    readonly endProgramDateTime: number | null;
-    readonly encrypted: boolean;
+    get byteRangeStartOffset(): number;
+    get byteRangeEndOffset(): number;
+    get decryptdata(): LevelKey | null;
+    get endProgramDateTime(): number | null;
+    get encrypted(): boolean;
     /**
      * @param {ElementaryStreamTypes} type
      */

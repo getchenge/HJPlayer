@@ -80,10 +80,12 @@ declare class FLVDemuxer {
     once(eventName: string, callback: EventEmitter.ListenerFn): void;
     off(eventName: string, callback?: EventEmitter.ListenerFn): void;
     destroy(): void;
-    timestampBase: number;
-    overridedDuration: number;
-    overridedHasAudio: boolean;
-    overridedHasVideo: boolean;
+    get timestampBase(): number;
+    set timestampBase(base: number);
+    get overridedDuration(): number;
+    set overridedDuration(duration: number);
+    set overridedHasAudio(hasAudio: boolean);
+    set overridedHasVideo(hasVideo: boolean);
     resetMediaInfo(): void;
     _isInitialMetadataDispatched(): boolean;
     insertDiscontinuity(): void;

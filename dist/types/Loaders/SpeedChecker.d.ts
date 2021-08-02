@@ -33,11 +33,11 @@ declare class SpeedChecker {
     /**
      * 当前下载速度
      */
-    readonly currentKBps: number;
-    readonly lastSecondKBps: number;
+    get currentKBps(): number;
+    get lastSecondKBps(): number;
     /**
      * 平均下载速度
      */
-    readonly averageKBps: number;
+    get averageKBps(): number;
 }
 export default SpeedChecker;

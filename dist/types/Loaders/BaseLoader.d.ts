@@ -20,14 +20,19 @@ declare class BaseLoader implements BaseLoaderInterface {
     off(eventName: string, callback?: EventEmitter.ListenerFn): void;
     destroy(): void;
     isWorking(): boolean;
-    readonly type: string;
-    readonly status: number;
-    readonly needStashBuffer: boolean;
-    onContentLengthKnown: Function | null;
-    onURLRedirect: Function | null;
-    onDataArrival: Function | null;
-    onError: Function | null;
-    onComplete: Function | null;
+    get type(): string;
+    get status(): number;
+    get needStashBuffer(): boolean;
+    get onContentLengthKnown(): Function | null;
+    set onContentLengthKnown(callback: Function | null);
+    get onURLRedirect(): Function | null;
+    set onURLRedirect(callback: Function | null);
+    get onDataArrival(): Function | null;
+    set onDataArrival(callback: Function | null);
+    get onError(): Function | null;
+    set onError(callback: Function | null);
+    get onComplete(): Function | null;
+    set onComplete(callback: Function | null);
     startLoad(mediaConfig: MediaConfig, range: SeekRange): void;
     abort(): void;
 }

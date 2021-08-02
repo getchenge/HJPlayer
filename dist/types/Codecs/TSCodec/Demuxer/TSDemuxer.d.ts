@@ -164,16 +164,24 @@ declare class TSDemuxer {
      * 文件标签
      */
     static Tag: 'TSDemuxer';
-    onTrackMetadata: Function | null;
-    onMediaInfo: Function | null;
-    onMetaDataArrived: Function | null;
-    onScriptDataArrived: Function | null;
-    onError: Function | null;
-    onDataAvailable: Function | null;
-    timestampBase: number;
-    overridedDuration: number;
-    overridedHasAudio: boolean;
-    overridedHasVideo: boolean;
+    get onTrackMetadata(): Function | null;
+    set onTrackMetadata(callback: Function | null);
+    get onMediaInfo(): Function | null;
+    set onMediaInfo(callback: Function | null);
+    get onMetaDataArrived(): Function | null;
+    set onMetaDataArrived(callback: Function | null);
+    get onScriptDataArrived(): Function | null;
+    set onScriptDataArrived(callback: Function | null);
+    get onError(): Function | null;
+    set onError(callback: Function | null);
+    get onDataAvailable(): Function | null;
+    set onDataAvailable(callback: Function | null);
+    get timestampBase(): number;
+    set timestampBase(base: number);
+    get overridedDuration(): number;
+    set overridedDuration(duration: number);
+    set overridedHasAudio(hasAudio: boolean);
+    set overridedHasVideo(hasVideo: boolean);
     on(event: string, listener: EventEmitter.ListenerFn): void;
     once(event: string, listener: EventEmitter.ListenerFn): void;
     off(event: string, listener: EventEmitter.ListenerFn): void;

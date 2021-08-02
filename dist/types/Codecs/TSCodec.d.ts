@@ -60,7 +60,7 @@ declare class TSCodec implements CodecInterface {
     /**
      * 获取TS转码事件
      */
-    static readonly Events: {
+    static get Events(): {
         ERROR: string;
         GET_SEI_INFO: string;
         FRAG_PARSED: string;
@@ -74,11 +74,11 @@ declare class TSCodec implements CodecInterface {
         LOAD_NEXT_FRAG: string;
         META_DATA: string;
     };
-    readonly config: Record<string, any>;
+    get config(): Record<string, any>;
     /**
      * 测试使用, 真实环境中需要父级传过来
      */
-    static readonly typeSupportFunc: () => typeSupported;
+    static get typeSupportFunc(): () => typeSupported;
     seek(ms?: number): void;
     insertDiscontinuity(): void;
     flushStashedSamples(): void;
