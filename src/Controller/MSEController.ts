@@ -614,7 +614,9 @@ class MSEController {
     }
 
     setMediaSourceDuration(duration: number) {
-        this._mediaSource!.duration = duration;
+        if (this._mediaSource) {
+            this._mediaSource!.duration = duration;
+        }
     }
 }
 
