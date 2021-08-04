@@ -34,7 +34,6 @@ class HJPlayer {
     userConfig: HJPlayerConfig | null
 
     constructor(mediaConfig: MediaConfig, userConfig?: UserConfig) {
-        console.info("DEBUG_HJPlayer__init", { mediaConfig, userConfig });
         this.Tag = 'HJPlayer';
         this.mediaConfig = mediaConfig;
         this.userConfig = { ...DefaultConfig, ...userConfig };

@@ -26,6 +26,7 @@ import Events from '../Events/index';
 import { IllegalStateException } from '../Utils/Exception';
 import { MediaSegment, InitSegment } from '../Interfaces/Segment';
 import IDRSampleList from '../Utils/IDRSampleList';
+import MediaConfig from '../Interfaces/MediaConfig';
 
 // Media Source Extensions controller
 
@@ -52,6 +53,8 @@ class MSEController {
     public TAG: string = 'MSEController'
 
     private _config: MSEControllerConfig
+
+    private _mediaConfig: any
 
     private _emitter: EventEmitter = new EventEmitter()
 
@@ -114,8 +117,11 @@ class MSEController {
 
     private _idrList: IDRSampleList = new IDRSampleList()
 
-    constructor(config: MSEControllerConfig) {
+    constructor(config: MSEControllerConfig, mediaConfig?: MediaConfig) {
         this._config = config;
+        if (mediaConfig) {
+            this._mediaConfig = mediaConfig;
+        }
         if (this._config.isLive && this._config.autoCleanupSourceBuffer === undefined) {
             // For live stream, do auto cleanup by default
             this._config.autoCleanupSourceBuffer = true;
@@ -147,7 +153,13 @@ class MSEController {
             this._mediaSourceObjectURL = window.URL.createObjectURL(this._mediaSource);
             mediaElement.src = this._mediaSourceObjectURL;
         } else {
-            mediaElement.addEventListener('play', this.e.onSourceOpen);
+            const _this = this;
+            const sourceOpenEvent = this._mediaConfig.sourceOpenEvent || 'timeupdate';
+            function handleSourceOpen() {
+                _this.e.onSourceOpen();
+                mediaElement.removeEventListener(sourceOpenEvent, handleSourceOpen);
+            }
+            mediaElement.addEventListener(sourceOpenEvent, handleSourceOpen);
             mediaElement.addEventListener('ended', this.e.onSourceEnded);
             mediaElement.addEventListener('emptied', this.e.onSourceClose);
             this._mediaElement = mediaElement;
@@ -553,7 +565,7 @@ class MSEController {
     }
 
     private _onSourceOpen() {
-        console.info('debubg_Hjplayer_onSourceOpen', +new Date());
+        // console.info('debubg_Hjplayer_onSourceOpen', +new Date());
         Log.info(this.TAG, 'MediaSource onSourceOpen');
 
         if (this.e) {

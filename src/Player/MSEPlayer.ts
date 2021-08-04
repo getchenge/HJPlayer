@@ -252,12 +252,18 @@ class MSEPlayer {
         mediaElement.addEventListener('stalled', this.e.onvStalled);
         mediaElement.addEventListener('progress', this.e.onvProgress);
 
-        this.userConfig && (this._msectl = new MSEController(this.userConfig));
+        if (this.userConfig) {
+            if (this.mediaConfig) {
+                this._msectl = new MSEController(this.userConfig, this.mediaConfig);
+            } else {
+                this._msectl = new MSEController(this.userConfig);
+            }
+        }
 
         this._msectl!.on(Events.UPDATE_END, this._onmseUpdateEnd.bind(this));
         this._msectl!.on(Events.BUFFER_FULL, this._onmseBufferFull.bind(this));
         this._msectl!.on(Events.SOURCE_OPEN, () => {
-            console.info('debug_Hjplayer_SOURCE_OPEN', +new Date());
+            // console.info('debug_Hjplayer_SOURCE_OPEN', +new Date());
             this._mseSourceOpened = true;
             if(this._hasPendingLoad) {
                 this._hasPendingLoad = false;
@@ -306,7 +312,7 @@ class MSEPlayer {
      * 加载媒体文件, 并绑定回调事件
      */
     load() {
-        console.info('debug_HjPlayer_loading', +new Date());
+        // console.info('debug_HjPlayer_loading', +new Date());
         if(!this._mediaElement) {
             throw new IllegalStateException('HTMLMediaElement must be attached before load()!');
         }

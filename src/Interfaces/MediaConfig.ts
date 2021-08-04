@@ -11,6 +11,7 @@ interface MediaConfig {
     duration?: number
     segments?: Array<FileSegment>
     cors?: boolean
+    sourceOpenEvent?: string
     referrerPolicy?:
         | ''
         | 'same-origin'
