@@ -18,7 +18,7 @@ export declare function isHeaderPattern(data: Uint8Array, offset: number): boole
 /**
  * 获取Header的长度
  */
-export declare function getHeaderLength(data: Uint8Array, offset: number): 7 | 9;
+export declare function getHeaderLength(data: Uint8Array, offset: number): 9 | 7;
 /**
  * 获取整个帧的数据长度
  */

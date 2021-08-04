@@ -155,6 +155,8 @@ class MSEController {
         } else {
             const _this = this;
             const sourceOpenEvent = this._mediaConfig.sourceOpenEvent || 'timeupdate';
+
+            //@ts-ignore
             function handleSourceOpen() {
                 _this.e.onSourceOpen();
                 mediaElement.removeEventListener(sourceOpenEvent, handleSourceOpen);
@@ -568,8 +570,8 @@ class MSEController {
         // console.info('debubg_Hjplayer_onSourceOpen', +new Date());
         Log.info(this.TAG, 'MediaSource onSourceOpen');
 
-        if (this.e) {
-            // this._mediaSource!.removeEventListener('sourceopen', this.e.onSourceOpen);
+        if (this.e && this._mediaSource) {
+            this._mediaSource!.removeEventListener('sourceopen', this.e.onSourceOpen);
         }
 
         // deferred sourcebuffer creation / initialization

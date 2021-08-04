@@ -1,5 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import { MediaSegment, InitSegment } from '../Interfaces/Segment';
+import MediaConfig from '../Interfaces/MediaConfig';
 interface MSEControllerConfig {
     isLive: boolean;
     autoCleanupSourceBuffer?: boolean;
@@ -16,6 +17,7 @@ interface MSEControllerE {
 declare class MSEController {
     TAG: string;
     private _config;
+    private _mediaConfig;
     private _emitter;
     on: <T extends string | symbol>(event: T, fn: (...args: any[]) => void, context?: any) => EventEmitter<string | symbol, any>;
     off: <T extends string | symbol>(event: T, fn?: ((...args: any[]) => void) | undefined, context?: any, once?: boolean | undefined) => EventEmitter<string | symbol, any>;
@@ -34,7 +36,7 @@ declare class MSEController {
     private _pendingSegments;
     private _pendingRemoveRanges;
     private _idrList;
-    constructor(config: MSEControllerConfig);
+    constructor(config: MSEControllerConfig, mediaConfig?: MediaConfig);
     destroy(): void;
     attachMediaElement(mediaElement: HTMLMediaElement): void;
     detachMediaElement(): void;
