@@ -114,7 +114,7 @@ type HJPlayerConfig = {
     /**
      * hasVideo false 时, 是否强制解析sei
      */
-    parseSei: boolean|undefined
+     parseSei?: boolean|undefined
 }
 
 export default HJPlayerConfig;

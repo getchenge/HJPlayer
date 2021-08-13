@@ -130,6 +130,7 @@ declare class HJPlayer {
         tsAutoLevelChoose: boolean;
         maxFragLookUpTolerance: number;
         defaultAudioCodec: undefined;
+        parseSei: undefined;
     };
     static get TransmuxingController(): typeof TransmuxingController;
     static get typeSupported(): import("./Interfaces/typeSupportData").default;

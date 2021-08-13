@@ -33,5 +33,6 @@ declare const HJPlayerDefaultConfig: {
     tsAutoLevelChoose: boolean;
     maxFragLookUpTolerance: number;
     defaultAudioCodec: undefined;
+    parseSei: undefined;
 };
 export default HJPlayerDefaultConfig;

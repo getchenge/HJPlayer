@@ -68,7 +68,9 @@ const HJPlayerDefaultConfig = {
 
     maxFragLookUpTolerance: 0.25, // used by stream-controller
 
-    defaultAudioCodec: undefined
+    defaultAudioCodec: undefined,
+
+    parseSei: undefined,
 };
 
 export default HJPlayerDefaultConfig;

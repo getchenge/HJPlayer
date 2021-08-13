@@ -14,6 +14,7 @@ declare class FLVDemuxer {
     _dispatch: boolean;
     _hasAudio: boolean | undefined;
     _hasVideo: boolean | undefined;
+    _parseSei: boolean | undefined;
     _hasAudioFlagOverrided: boolean;
     _hasVideoFlagOverrided: boolean;
     _audioInitialMetadataDispatched: boolean;

@@ -40,21 +40,21 @@ class HJPlayer {
         HJPlayerLogger.config = this.userConfig;
         HJPlayerLogger.GLOBAL_TAG = this.userConfig.GLOBAL_TAG;
 
-        if (!this.mediaConfig) {
+        if(!this.mediaConfig) {
             throw new Error('mediaConfig is needed');
         }
 
-        if (!this.mediaConfig.type || typeof this.mediaConfig.type !== 'string') {
+        if(!this.mediaConfig.type || typeof this.mediaConfig.type !== 'string') {
             throw new Error('mediaConfig need correct type option');
         }
 
-        if (!this.mediaConfig.url || typeof this.mediaConfig.url !== 'string') {
+        if(!this.mediaConfig.url || typeof this.mediaConfig.url !== 'string') {
             throw new Error('mediaConfig need correct url option');
         }
 
         const mediaType = this.mediaConfig.type.toLowerCase();
 
-        switch (mediaType) {
+        switch(mediaType) {
             case 'mp4':
                 return new NativePlayer(this.mediaConfig, this.userConfig);
             case 'flv':

@@ -107,7 +107,9 @@ interface UserConfig {
 
     referrerPolicy?: any,
 
-    defaultAudioCodec: string | undefined
+    defaultAudioCodec: string | undefined,
+
+    parseSei?: boolean | undefined
 }
 
 export default UserConfig;
