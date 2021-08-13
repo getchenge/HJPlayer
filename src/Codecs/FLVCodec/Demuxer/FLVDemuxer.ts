@@ -51,6 +51,8 @@ class FLVDemuxer {
 
     _hasVideo: boolean | undefined
 
+    _parseSei: boolean | undefined
+
     _hasAudioFlagOverrided: boolean
 
     _hasVideoFlagOverrided: boolean
@@ -903,7 +905,7 @@ class FLVDemuxer {
             return;
         }
 
-        if(this._hasVideoFlagOverrided === true && this._hasVideo === false) {
+        if(this._hasVideoFlagOverrided === true && this._hasVideo === false && this.config.parseSei !== true) {
             // If hasVideo: false indicated explicitly in MediaDataSource,
             // Ignore all the video packets
             return;
@@ -960,7 +962,9 @@ class FLVDemuxer {
 
         if(packetType === 0) {
             // AVCDecoderConfigurationRecord
-            this._parseAVCDecoderConfigurationRecord(arrayBuffer, dataOffset + 4, dataSize - 4);
+            if(this.config.parseSei !== true) {
+                this._parseAVCDecoderConfigurationRecord(arrayBuffer, dataOffset + 4, dataSize - 4);
+            }
         } else if(packetType === 1) {
             // One or more Nalus
             this._parseAVCVideoData(

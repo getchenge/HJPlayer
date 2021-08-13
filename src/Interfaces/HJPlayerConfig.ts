@@ -109,7 +109,12 @@ type HJPlayerConfig = {
 
     referrerPolicy?: any,
 
-    defaultAudioCodec: string | undefined
+    defaultAudioCodec: string | undefined,
+
+    /**
+     * hasVideo false 时, 是否强制解析sei
+     */
+    parseSei: boolean|undefined
 }
 
 export default HJPlayerConfig;
