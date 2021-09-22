@@ -1329,6 +1329,7 @@ class TSDemuxer {
                     break;
                 // SEI
                 // eslint-disable-next-line no-case-declarations
+                case 24:
                 case 6: {
                     push = true;
                     if (debug && avcSample) {

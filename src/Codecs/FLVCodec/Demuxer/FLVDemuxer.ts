@@ -1236,7 +1236,7 @@ class FLVDemuxer {
 
             const data = new Uint8Array(arrayBuffer, dataOffset + offset, lengthSize + naluSize);
             const unit: NALUnit = { type: unitType, data };
-            if(unit.type === 6) {
+            if(unit.type === 6 || unit.type === 24) {
                 // 获取到SEI信息
                 try {
                     const unitArray: Uint8Array = data.subarray(lengthSize);
